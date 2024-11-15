@@ -97,7 +97,7 @@ def main():
 
 
     # For classification
-    clf = MLPClassifier(hidden_layer_sizes=(90,45,20), activation='relu', solver='adam', max_iter=300, verbose=True)
+    clf = MLPClassifier(hidden_layer_sizes=(10,), activation='relu', solver='adam', max_iter=300, verbose=True)
     clf.fit(X, y)
     predictions = clf.predict(X)
 

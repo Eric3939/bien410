@@ -131,10 +131,12 @@ def main():
     # MLP
     t1 = time()
     mlp = MLP(X.shape[1], [90, 45, 20, 10], 1)
-    mlp.train(X, y,  0.1, 300)
-    mlp.save_parameters('parameters.txt')
+    # mlp.train(X, y,  0.1, 300)
+    # mlp.save_parameters('parameters.txt')
+    mlp.load_parameters('parameters.txt')
     predictions = mlp.forward(X)
     predictions = (predictions >= 0.5).astype(int)
+    print(predictions)
     t2 = time()
     print(f'MLP completed. time: {round(t2-t1)}s')
     n = 0
