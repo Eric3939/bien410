@@ -135,11 +135,11 @@ def main():
     # mlp.save_parameters('parameters.txt')
     mlp.load_parameters('parameters.txt')
     predictions = mlp.forward(X)
-    predictions = (predictions >= 0.5).astype(int)
     print(predictions)
     print(type(predictions[0][0]))
     print(predictions[0][0])
     np.savetxt('predictions.txt', predictions)
+    predictions = (predictions >= 0.5).astype(int)
 
     t2 = time()
     print(f'MLP completed. time: {round(t2-t1)}s')
