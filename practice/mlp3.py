@@ -113,7 +113,6 @@ if __name__ == "__main__":
     mlp = MLP(20, [15, 10, 5], 1)
     # mlp.fit(X_train, y_train, epochs=6000, rate=0.1)
     # mlp.save_parameters('param.txt')
-
     mlp.load_parameters('param.txt')
     y_pred = mlp.predict(X_test)
     
