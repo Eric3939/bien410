@@ -21,6 +21,41 @@ class Protein:
     def __len__(self) -> int:
         return len(self.seq)
 
+def symToNum(symbol):
+    d = {'A':0, 'R':1, 'N':2, 'D':3, 
+         'C':4, 'E':5, 'Q':6, 'G':7, 
+         'H':8, 'I':9, 'L':10, 'K':11, 
+         'M':12, 'F':13, 'P':14, 'S':15, 
+         'T':16, 'W':17, 'Y':18, 'V':19}
+    return d[symbol]
+
+def out(predictions, data, outfile):
+    # output the predictions to outfile.txt
+    n = 0
+    for p in data.values():
+        pred = ''
+        for _ in range(len(p)):
+            if predictions[n] == 1:
+                pred += 'H'
+            else:
+                pred += '-'
+            n+=1
+        p.pred = pred
+
+    # write
+    with open(outfile, 'w') as f:
+        for p in data.values():
+            f.write(f'{p.id}\n')
+            f.write(f'{p.seq}\n')
+            f.write(f'{p.pred}\n')
+
+def accuracy():
+    result = subprocess.run(['python3', 'testing.py', '-p', '../src5/outfile.txt', '-l', '../training_data/labels.txt'], capture_output=True, text=True)
+    result = result.stdout
+    result = result.split()[2]
+
+    print(float(result))
+
 class MLP:
     def __init__ (self, input, hidden, output=1):
         self.dA = []
@@ -109,13 +144,7 @@ class MLP:
                     continue
                 l.append(np.float64(line))    
 
-def symToNum(symbol):
-    d = {'A':0, 'R':1, 'N':2, 'D':3, 
-         'C':4, 'E':5, 'Q':6, 'G':7, 
-         'H':8, 'I':9, 'L':10, 'K':11, 
-         'M':12, 'F':13, 'P':14, 'S':15, 
-         'T':16, 'W':17, 'Y':18, 'V':19}
-    return d[symbol]
+
 
 def main():
     # read
@@ -125,7 +154,6 @@ def main():
     y = y.reshape((-1, 1))
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
-
 
     structure = [
         [90, 45, 20, 10],
@@ -140,48 +168,18 @@ def main():
         0.01
     ]
 
-
-
     # MLP
-    # t1 = time()
     for str in structure:
         for rate in rates:
             for _ in range(2):
                 mlp = MLP(X.shape[1], str, 1)
-                mlp.fit(X, y, 1000, rate)
+                mlp.fit(X, y, 10000, rate)
+                predictions = mlp.predict(X)
+                out(predictions, data, 'outfile.txt')
+                
 
 
 
-
-    # mlp.load_parameters('parameters.txt')
-    predictions = mlp.forward(X)
-    print(predictions)
-    print(type(predictions[0][0]))
-    print(predictions[0][0])
-    np.savetxt('predictions.txt', predictions)
-    predictions = (predictions >= 0.5).astype(int)
-
-    t2 = time()
-    print(f'MLP completed. time: {round(t2-t1)}s')
-    n = 0
-    for p in data.values():
-        pred = ''
-        for _ in range(len(p)):
-            if predictions[n] == 1:
-                pred += 'H'
-            else:
-                pred += '-'
-            n+=1
-        p.pred = pred
-    print('prediction updated')
-
-    # write
-    with open('outfile.txt', 'w') as f:
-        for p in data.values():
-            f.write(f'{p.id}\n')
-            f.write(f'{p.seq}\n')
-            f.write(f'{p.pred}\n')
-    print('write completed')
 
 
 
