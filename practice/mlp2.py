@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class Linear:
     def __init__(self, d1, d2) -> None:     # d1: neurons in previous layer     d2: neurons in current layer
-        self.w = np.random.randn(d1, d2) * 0.01     # initialize random weights
+        self.w = np.random.randn(d1, d2) * 0.1     # initialize random weights
         self.b = np.zeros((1, d2))
 
     def forward(self, x):
@@ -95,15 +95,16 @@ if __name__ == "__main__":
     from sklearn.metrics import accuracy_score
     from sklearn.datasets import make_classification
 
-    X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, random_state=42)
+    X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, weights=(0.8, 0.2), random_state=42)
     y = y.reshape((-1, 1))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
     mlp = MLP(X.shape[1], [10, 5], 1)
-    mlp.train(X_train, y_train,  0.1, 10000)
+    mlp.train(X_train, y_train,  0.5, 10000)
     mlp.save_parameters('parameters.txt')
     # mlp.load_parameters('parameters.txt')
     predictions = mlp.forward(X_test)
+    print(predictions)
     predictions = (predictions >= 0.5).astype(int)
     print("Accuracy:", accuracy_score(y_test, predictions))
 
