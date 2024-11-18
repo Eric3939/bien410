@@ -148,7 +148,7 @@ class MLP:
 
 def main():
     with open('log.txt', 'w') as f:
-        f.write()
+        f.write('')
 
     # read
     t1 = time()
@@ -188,7 +188,7 @@ def main():
                 # write log
                 with open('log.txt', 'a') as f:
                     f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\n')
-                    
+
 
                 
 
