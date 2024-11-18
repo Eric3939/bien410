@@ -3,6 +3,8 @@
 import numpy as np
 from read import read
 from time import time
+import subprocess
+
 
 class Protein:
     def __init__(self, id, seq, win) -> None:
@@ -19,79 +21,73 @@ class Protein:
     def __len__(self) -> int:
         return len(self.seq)
 
-class Linear:
-    def __init__(self, d1, d2) -> None:     # d1: neurons in previous layer     d2: neurons in current layer
-        self.w = np.random.randn(d1, d2) * 0.01     # initialize random weights
-        self.b = np.zeros((1, d2))
-
-    def forward(self, x):
-        self.input = x      # for later backpropagation
-        return np.dot(x, self.w) + self.b
-    
-    def backward(self, delta, rate):
-        # backpropagation
-        dw = np.dot(self.input.T, delta)
-        db = np.sum(delta, axis=0, keepdims=True)
-        delta = np.dot(delta, self.w.T)     # update delta by mutliplying correponding weight, then pass it to the previous layer
-
-        # gradient descent
-        self.w -= rate * dw
-        self.b -= rate * db
-
-        return delta
-
 class MLP:
-    def __init__(self, input, layer, output) -> None:
-        sizes = [input] + layer + [output]      # number of neurons
+    def __init__ (self, input, hidden, output=1):
+        self.dA = []
         self.layers = []
-        self.loss = []
-
-        for i in range(len(sizes) - 1):
-            self.layers.append(Linear(sizes[i], sizes[i+1]))
+        layers = [input] + hidden + [output]     # number of neurons in each layer
+        for i in range(len(layers) - 1):
+            w = np.random.randn(layers[i], layers[i + 1])    # initialize weights with normal dist
+            b = np.zeros((1, layers[i + 1]))
+            self.layers.append((w, b))
 
     def relu(self, x):
         return np.maximum(0, x)
     
     def d_relu(self, x):
-        return (x > 0).astype(float)
+        return x > 0
     
-    def forward(self, x):
-        self.activations = []   # value after activation
-        for i, layer in enumerate(self.layers):
-            x = layer.forward(x)
-            # apply relu activation except for the last layer
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+    
+    def forward(self, X):
+        self.cache = []     # save the linear combination (Z) for backpropagation
+        A = X
+        for i, (W, b) in enumerate(self.layers):
+            Z = A @ W + b
+            self.cache.append((A, Z))
             if i < len(self.layers) - 1:
-                x = self.relu(x)
-            self.activations.append(x)
-        return x
+                A = self.relu(Z)        # relu for hidden layers
+            else:
+                A = self.sigmoid(Z)     # sigmoid for output layer
+        return A
     
-    def backward(self, delta, rate):
+    def backward(self, X, y, rate=0.1):
+        m = y.shape[0]      # number of samples
+        dA = self.forward(X) - y.reshape(-1, 1)     # derivative of binary cross-entropy
+        self.dA.append(dA.mean())
         for i in reversed(range(len(self.layers))):
-            # chain rule except for the last layer
-            if i < len(self.layers) - 1:
-                delta *= self.d_relu(self.activations[i])
-            delta = self.layers[i].backward(delta, rate)
+            A_prev, Z = self.cache[i]
+            W, b = self.layers[i]
+            if i < len(self.layers) - 1:        # backpropagation (it's just a chain rule)
+                dZ = dA * self.d_relu(Z)
+            else:
+                dZ = dA
+            dW = A_prev.T @ dZ / m
+            db = np.sum(dZ, axis=0, keepdims=True) / m
+            dA = dZ @ W.T
+            self.layers[i] = (W - rate * dW, b - rate * db)     # gradient descent
 
-    def train(self, x, y, rate, epochs):
-        with open('log.txt', 'w')as f:
-            pass
-        for epoch in range(epochs):
-            y_pred = self.forward(x)
-            # binary cross entropy loss
-            loss = - np.mean(y * np.log(y_pred + 1e-12) + (1 - y) * np.log(1 - y_pred + 1e-12))
-            self.loss.append(loss)
-            delta = (y_pred - y) / y.shape[0]
-            self.backward(delta, rate)
-            # if epoch%100 == 0:
-            print(f'epoch: {epoch}\tloss:{loss}')
-            with open('log.txt', 'a') as f:
-                f.write(f'epoch: {epoch}\tloss:{loss}'+'\n')
+    def fit(self, X, y, epochs=1000, rate=0.1):
+        n = 10
+        i = 0
+        for _ in range(epochs):
+            self.backward(X, y, rate)
+            if abs(self.dA[-1]) < 1e-4:
+                n -= 1 
+            if n <= 0 : break   # training stops when consecutive low dA
+            i += 1
+        return i
+    def predict(self, X):
+        output = self.forward(X)
+        return (output > 0.5).astype(int)
     
     def save_parameters(self, filename):
         with open(filename, 'w') as f:
             for layer in self.layers:
-                np.savetxt(f, layer.w.flatten(), header="Weights of Layer")
-                np.savetxt(f, layer.b.flatten(), header="Bias of Layer")
+                np.savetxt(f, layer[0].flatten(), header="Weights of Layer")
+                np.savetxt(f, layer[1].flatten(), header="Bias of Layer")
+            f.write("#")
 
     def load_parameters(self, filename):
         with open(filename, 'r') as f:
@@ -103,13 +99,15 @@ class MLP:
                     l = np.array(l)
                     layer = self.layers[i//2]
                     if i%2 == 0:
-                        layer.w = l.reshape(layer.w.shape)
+                        weight = l.reshape(layer[0].shape)    # weight
                     else:
-                        layer.b = l.reshape(layer.b.shape)
+                        bias = l.reshape(layer[1].shape)    # bias
+                        layer = (weight, bias)
+                        self.layers[i//2] = layer
                     l = []
                     i+=1
                     continue
-                l.append(float(line))    
+                l.append(np.float64(line))    
 
 def symToNum(symbol):
     d = {'A':0, 'R':1, 'N':2, 'D':3, 
@@ -128,12 +126,34 @@ def main():
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
 
+
+    structure = [
+        [90, 45, 20, 10],
+        [60, 120, 100, 50],
+        [128, 64, 32, 16, 8],
+        [30, 90, 120, 90, 30],
+        [240, 180, 90, 40, 20]
+    ]
+
+    rates = [
+        0.1, 
+        0.01
+    ]
+
+
+
     # MLP
-    t1 = time()
-    mlp = MLP(X.shape[1], [90, 45, 20, 10], 1)
-    # mlp.train(X, y,  0.1, 300)
-    # mlp.save_parameters('parameters.txt')
-    mlp.load_parameters('parameters.txt')
+    # t1 = time()
+    for str in structure:
+        for rate in rates:
+            for _ in range(2):
+                mlp = MLP(X.shape[1], str, 1)
+                mlp.fit(X, y, 1000, rate)
+
+
+
+
+    # mlp.load_parameters('parameters.txt')
     predictions = mlp.forward(X)
     print(predictions)
     print(type(predictions[0][0]))
