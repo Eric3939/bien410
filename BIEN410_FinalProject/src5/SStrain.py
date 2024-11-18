@@ -50,11 +50,10 @@ def out(predictions, data, outfile):
             f.write(f'{p.pred}\n')
 
 def accuracy():
-    result = subprocess.run(['python3', 'testing.py', '-p', '../src5/outfile.txt', '-l', '../training_data/labels.txt'], capture_output=True, text=True)
+    result = subprocess.run(['python3', '../testing/testing.py', '-p', 'outfile.txt', '-l', '../training_data/labels.txt'], capture_output=True, text=True)
     result = result.stdout
     result = result.split()[2]
-
-    print(float(result))
+    return float(result)
 
 class MLP:
     def __init__ (self, input, hidden, output=1):
@@ -113,6 +112,7 @@ class MLP:
             if n <= 0 : break   # training stops when consecutive low dA
             i += 1
         return i
+    
     def predict(self, X):
         output = self.forward(X)
         return (output > 0.5).astype(int)
@@ -147,6 +147,9 @@ class MLP:
 
 
 def main():
+    with open('log.txt', 'w') as f:
+        f.write()
+
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
@@ -168,14 +171,25 @@ def main():
         0.01
     ]
 
-    # MLP
-    for str in structure:
+    # MLP training
+    best_acc = 0
+    for stru in structure:
         for rate in rates:
             for _ in range(2):
-                mlp = MLP(X.shape[1], str, 1)
-                mlp.fit(X, y, 10000, rate)
+                mlp = MLP(X.shape[1], stru, 1)
+                iter = mlp.fit(X, y, 5000, rate)
                 predictions = mlp.predict(X)
                 out(predictions, data, 'outfile.txt')
+                acc = accuracy()
+                if acc > best_acc:
+                    best_acc = acc
+                    mlp.save_parameters('best_para.txt')
+                
+                # write log
+                with open('log.txt', 'a') as f:
+                    f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\n')
+                    
+
                 
 
 
