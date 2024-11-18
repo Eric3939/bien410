@@ -8,7 +8,7 @@ class MLP:
         self.layers = []
         layers = [input] + hidden + [output]     # number of neurons in each layer
         for i in range(len(layers) - 1):
-            w = np.random.randn(layers[i], layers[i + 1])    # initialize weights with normal dist
+            w = np.random.randn(layers[i], layers[i + 1])   # initialize weights with normal dist
             b = np.zeros((1, layers[i + 1]))
             self.layers.append((w, b))
 
@@ -61,7 +61,8 @@ class MLP:
         return i
     def predict(self, X):
         output = self.forward(X)
-        return (output > 0.5).astype(int)
+        # return (output > 0.5).astype(int)
+        return output
     
     def save_parameters(self, filename):
         with open(filename, 'w') as f:
@@ -115,7 +116,7 @@ if __name__ == "__main__":
     mlp.save_parameters('param.txt')
     mlp.load_parameters('param.txt')
     y_pred = mlp.predict(X_test)
-    
+    print(y_pred)
 
     # evaluate
     accuracy = accuracy_score(y_test, y_pred)

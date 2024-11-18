@@ -1,59 +1,8 @@
-# MLP
+# added Xavier weight distribution
 
 import numpy as np
-from read import read
-from time import time
-import subprocess
-
-
-class Protein:
-    def __init__(self, id, seq, win) -> None:
-        self.id = id
-        self.seq = seq
-        flank = win // 2
-        self.seq_flank = '-'*flank + self.seq + '-'*flank
-        self.label = None
-        self.pred = None
-
-    def __str__(self) -> str:
-        return f'{self.id}\n{self.seq}\n{self.label}\n{self.pred}\n'
-
-    def __len__(self) -> int:
-        return len(self.seq)
-
-def symToNum(symbol):
-    d = {'A':0, 'R':1, 'N':2, 'D':3, 
-         'C':4, 'E':5, 'Q':6, 'G':7, 
-         'H':8, 'I':9, 'L':10, 'K':11, 
-         'M':12, 'F':13, 'P':14, 'S':15, 
-         'T':16, 'W':17, 'Y':18, 'V':19}
-    return d[symbol]
-
-def out(predictions, data, outfile):
-    # output the predictions to outfile.txt
-    n = 0
-    for p in data.values():
-        pred = ''
-        for _ in range(len(p)):
-            if predictions[n] == 1:
-                pred += 'H'
-            else:
-                pred += '-'
-            n+=1
-        p.pred = pred
-
-    # write
-    with open(outfile, 'w') as f:
-        for p in data.values():
-            f.write(f'{p.id}\n')
-            f.write(f'{p.seq}\n')
-            f.write(f'{p.pred}\n')
-
-def accuracy():
-    result = subprocess.run(['python3', '../testing/testing.py', '-p', 'outfile.txt', '-l', '../training_data/labels.txt'], capture_output=True, text=True)
-    result = result.stdout
-    result = result.split()[2]
-    return float(result)
+import matplotlib.pyplot as plt
+from math import sqrt
 
 class MLP:
     def __init__ (self, input, hidden, output=1):
@@ -61,7 +10,11 @@ class MLP:
         self.layers = []
         layers = [input] + hidden + [output]     # number of neurons in each layer
         for i in range(len(layers) - 1):
-            w = np.random.randn(layers[i], layers[i + 1])    # initialize weights with normal dist
+            # xavier weight initialization
+            n = layers[i]
+            lower, upper = -(1.0 / sqrt(n)), (1.0 / sqrt(n))
+            
+            w = np.random.randn(layers[i], layers[i + 1])   # initialize weights with normal dist
             b = np.zeros((1, layers[i + 1]))
             self.layers.append((w, b))
 
@@ -112,10 +65,10 @@ class MLP:
             if n <= 0 : break   # training stops when consecutive low dA
             i += 1
         return i
-    
     def predict(self, X):
         output = self.forward(X)
-        return (output > 0.5).astype(int)
+        # return (output > 0.5).astype(int)
+        return output
     
     def save_parameters(self, filename):
         with open(filename, 'w') as f:
@@ -142,60 +95,37 @@ class MLP:
                     l = []
                     i+=1
                     continue
-                l.append(np.float64(line))    
+                l.append(np.float64(line))  
 
 
 
-def main():
-    with open('log.txt', 'w') as f:
-        f.write('')
+if __name__ == "__main__":
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import accuracy_score
+    from sklearn.datasets import make_classification
+    from sklearn.neural_network import MLPClassifier
+    from sklearn.metrics import accuracy_score
 
-    # read
-    t1 = time()
-    inputFile = '../training_data/labels.txt'
-    X, y, data = read(inputFile, 9)
+
+    X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, weights=(0.6, 0.4), random_state=42)
     y = y.reshape((-1, 1))
-    t2 = time()
-    print(f'read completed. time: {round(t2-t1)}s')
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-    structure = [
-        # [90, 45, 20, 10],
-        # [60, 120, 100, 50],
-        [128, 64, 32, 16, 8],
-        [30, 90, 120, 90, 30],
-        [240, 180, 90, 40, 20]
-    ]
+    # # sklearn MLP
+    # mlp = MLPClassifier(hidden_layer_sizes=(15, 10, 5), max_iter=1000)
+    # mlp.fit(X_train, y_train)
+    # y_pred = mlp.predict(X_test)
 
-    rates = [
-        0.1, 
-        0.01
-    ]
+    # hand-coded MLP
+    mlp = MLP(20, [15, 10, 5], 1)
+    mlp.fit(X_train, y_train, epochs=6000, rate=0.1)
+    mlp.save_parameters('param.txt')
+    mlp.load_parameters('param.txt')
+    y_pred = mlp.predict(X_test)
+    print(y_pred)
 
-    # MLP training
-    best_acc = 0
-    for stru in structure:
-        for rate in rates:
-            for _ in range(1):
-                mlp = MLP(X.shape[1], stru, 1)
-                iter = mlp.fit(X, y, 5000, rate)
-                predictions = mlp.predict(X)
-                out(predictions, data, 'outfile.txt')
-                acc = accuracy()
-                if acc > best_acc:
-                    best_acc = acc
-                    mlp.save_parameters('best_para.txt')
-                
-                # write log
-                with open('log.txt', 'a') as f:
-                    f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\n')
+    # evaluate
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Accuracy: {accuracy * 100:.2f}%")
 
 
-                
-
-
-
-
-
-
-if __name__ == '__main__':
-    main()
