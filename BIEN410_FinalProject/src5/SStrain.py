@@ -147,7 +147,7 @@ class MLP:
 
 
 def main():
-    with open('log.txt', 'w') as f:
+    with open('log2.txt', 'w') as f:
         f.write('')
 
     # read
@@ -186,7 +186,7 @@ def main():
                     mlp.save_parameters('best_para.txt')
                 
                 # write log
-                with open('log.txt', 'a') as f:
+                with open('log2.txt', 'a') as f:
                     f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\n')
 
 
