@@ -8,6 +8,9 @@
 
 # Load necessary modules and activate environment
 module load cuda
+module load StdEnv/2023
+module load arrow/14.0.1
+
 source ../bien410/bin/activate
 
 # Run the Python script
