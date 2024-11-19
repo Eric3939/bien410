@@ -1,4 +1,6 @@
 import numpy as np
+from time import time
+from datetime import datetime
 
 # x = np.array([1,2,3])
 # w = np.array([[4,5],
@@ -17,4 +19,9 @@ import numpy as np
 #               [5,6]])
 # print(x@w)
 
-print(np.random.rand(100))
+# print(np.random.rand(100))
+
+# Get current time
+current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+print(current_time)
+

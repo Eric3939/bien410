@@ -4,6 +4,7 @@ import numpy as np
 from math import sqrt
 from read import read
 from time import time
+from datetime import datetime
 import subprocess
 
 
@@ -156,7 +157,8 @@ class MLP:
 
 
 def main():
-    with open('log2.txt', 'w') as f:
+    curr_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    with open(f'log_{curr_time}.txt', 'w') as f:
         f.write('')
 
     # read
@@ -168,8 +170,8 @@ def main():
     print(f'read completed. time: {round(t2-t1)}s')
 
     structure = [
-        # [90, 45, 20, 10],
-        # [60, 120, 100, 50],
+        [90, 45, 20, 10],
+        [60, 120, 100, 50],
         [128, 64, 32, 16, 8],
         [30, 90, 120, 90, 30],
         [240, 180, 90, 40, 20]
@@ -195,7 +197,7 @@ def main():
                     mlp.save_parameters('best_para.txt')
                 
                 # write log
-                with open('log2.txt', 'a') as f:
+                with open(f'log{curr_time}.txt', 'a') as f:
                     f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\n')
 
 
