@@ -7,7 +7,7 @@
 #SBATCH --output=output_%j.log   # Standard output and error log
 
 # Load necessary modules and activate environment
-module load cuda/12.6
+module load cuda
 source ../bien410/bin/activate
 
 # Run the Python script
