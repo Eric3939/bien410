@@ -3,7 +3,7 @@
 #SBATCH --gres=gpu:1             # Request 1 GPU
 #SBATCH --cpus-per-task=4        # CPU cores per task
 #SBATCH --mem=16G                # Memory per node
-#SBATCH --time=00:10:00          # Time limit hrs:min:sec
+#SBATCH --time=00:01:00          # Time limit hrs:min:sec
 #SBATCH --output=output_%j.log   # Standard output and error log
 
 # Load necessary modules and activate environment
