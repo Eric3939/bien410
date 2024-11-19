@@ -13,5 +13,8 @@ module load arrow/14.0.1
 
 source ../bien410/bin/activate
 
+pip install cupy-cuda12x
+
+
 # Run the Python script
 python gpu.py
