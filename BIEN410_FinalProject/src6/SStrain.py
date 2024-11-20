@@ -197,7 +197,7 @@ def main():
                     mlp.save_parameters('best_para.txt')
                 
                 # write log
-                with open(f'log{curr_time}.txt', 'a') as f:
+                with open(f'log_{curr_time}.txt', 'a') as f:
                     f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\n')
 
 
