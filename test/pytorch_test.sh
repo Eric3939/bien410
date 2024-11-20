@@ -16,4 +16,4 @@ source ~/bien410/bien410/bien410/bin/activate
 cd ~/bien410/bien410/test/
 
 
-python pytorch-test.py
+python pytorch_test.py
