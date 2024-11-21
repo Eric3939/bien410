@@ -174,12 +174,13 @@ def main():
         [60, 120, 100, 50],
         [128, 64, 32, 16, 8],
         [30, 90, 120, 90, 30],
-        [240, 180, 90, 40, 20]
+        [240, 180, 90, 40, 20],
+        [300, 180, 90, 30]
     ]
 
     rates = [
         0.1, 
-        0.01
+        0.5
     ]
 
     # MLP training
@@ -188,13 +189,13 @@ def main():
         for rate in rates:
             for _ in range(1):
                 mlp = MLP(X.shape[1], stru, 1)
-                iter = mlp.fit(X, y, 5000, rate)
+                iter = mlp.fit(X, y, 10000, rate)
                 predictions = mlp.predict(X)
                 out(predictions, data, 'outfile.txt')
                 acc = accuracy()
                 if acc > best_acc:
                     best_acc = acc
-                    mlp.save_parameters('best_para.txt')
+                    mlp.save_parameters(f'best_para_{curr_time}.txt')
                 
                 # write log
                 with open(f'log_{curr_time}.txt', 'a') as f:
