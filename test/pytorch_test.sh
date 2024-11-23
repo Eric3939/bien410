@@ -21,8 +21,8 @@ source ../bien410/bin/activate
 # cd ~/bien410/bien410/test/
 
 
-python pytorch_test.py
+# python pytorch_test.py
 
 
-# echo "starting training..."
-# time python3 cifar.py --batch_size=512 --num_workers=0
+echo "starting training..."
+time python3 cifar.py --batch_size=512 --num_workers=0
