@@ -6,7 +6,7 @@
 #SBATCH --mail-user=yitao.sun@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 
-module load python # Make sure to choose a version that suits your application
+module load python/3.12.4 # Make sure to choose a version that suits your application
 # virtualenv --no-download $SLURM_TMPDIR/env
 # source $SLURM_TMPDIR/env/bin/activate
 # pip install torch --no-index
