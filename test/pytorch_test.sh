@@ -17,7 +17,7 @@ module load python # Make sure to choose a version that suits your application
 
 # cd ~/$project/
 # source ~/bien410/bien410/bien410/bin/activate
-source ../bien410/bin/activate
+# source ../bien410/bin/activate
 # cd ~/bien410/bien410/test/
 
 
