@@ -11,6 +11,10 @@ module load python # Make sure to choose a version that suits your application
 # source $SLURM_TMPDIR/env/bin/activate
 # pip install torch --no-index
 
+# module load cuda
+module load StdEnv/2023
+# module load arrow/14.0.1
+
 cd ~/$project/
 source ~/bien410/bien410/bien410/bin/activate
 cd ~/bien410/bien410/test/
