@@ -12,8 +12,8 @@ module load python # Make sure to choose a version that suits your application
 # pip install torch --no-index
 
 # module load cuda
-module load StdEnv/2023
-# module load arrow/14.0.1
+module load StdEnv/2023         # I didn't see a lot of packages
+# module load arrow/14.0.1      # a lot of packages (pandas, matplotlib, ...)
 
 # cd ~/$project/
 # source ~/bien410/bien410/bien410/bin/activate
