@@ -12,7 +12,7 @@ module load python # Make sure to choose a version that suits your application
 # pip install torch --no-index
 
 # module load cuda
-module load StdEnv/2023         # I didn't see a lot of packages
+# module load StdEnv/2023         # I didn't see a lot of packages
 # module load arrow/14.0.1      # a lot of packages (pandas, matplotlib, ...)
 
 # cd ~/$project/
@@ -21,8 +21,8 @@ source ../bien410/bin/activate
 # cd ~/bien410/bien410/test/
 
 
-# python pytorch_test.py
+python pytorch_test.py
 
 
-echo "starting training..."
-time python3 cifar.py --batch_size=512 --num_workers=0
+# echo "starting training..."
+# time python3 cifar.py --batch_size=512 --num_workers=0
