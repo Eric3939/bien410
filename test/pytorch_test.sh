@@ -17,12 +17,12 @@ module load python # Make sure to choose a version that suits your application
 
 # cd ~/$project/
 # source ~/bien410/bien410/bien410/bin/activate
-# source ../bien410/bin/activate
+# source ../bien410/bin/activate            # you don't need to activate here as long as you activated in your compute canada terminal
 # cd ~/bien410/bien410/test/
 
 
-python pytorch_test.py
+# python pytorch_test.py
 
 
-# echo "starting training..."
-# time python3 cifar.py --batch_size=512 --num_workers=0
+echo "starting training..."
+time python3 cifar.py --batch_size=512 --num_workers=0
