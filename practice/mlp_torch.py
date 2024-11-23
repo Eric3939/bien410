@@ -6,7 +6,6 @@ import torch.nn.init as init
 
 
 
-
 # loss_fn = nn.CrossEntropyLoss()
 # loss = loss_fn(output, label)
 # optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -43,7 +42,7 @@ if __name__ == "__main__":
     else:
         print("No GPU detected, using CPU.")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
     model = nn.Sequential(
         nn.Linear(20, 15),
         nn.ReLU(),
