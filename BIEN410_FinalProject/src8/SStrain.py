@@ -151,7 +151,7 @@ def main():
     print(f'read completed. time: {round(t2-t1)}s')
 
     structure = [
-        [160, 140, 100, 80, 51, 34, 17, 4, 1]
+        [160, 140, 120, 98, 72, 36, 18, 9, 4, 1]
     ]
 
     rates = [
