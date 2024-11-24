@@ -151,12 +151,13 @@ def main():
     print(f'read completed. time: {round(t2-t1)}s')
 
     structure = [
-        [280, 220, 180, 120, 90, 40, 20, 1]
+        [170, 85, 51 ,17, 1],
+        [170, 85, 51 ,17, 4, 1],
     ]
 
     rates = [
         0.01, 
-        0.02
+        0.005
     ]
 
     # MLP training
