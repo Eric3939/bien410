@@ -137,7 +137,8 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    X, y, data = read(inputFile, 15)
+    window = 17
+    X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
@@ -184,7 +185,7 @@ def main():
 
                 # write log
                 with open(f'log_{curr_time}.txt', 'a') as f:
-                    f.write(f'{acc}\t{rate}\t{iter}\t{str(stru)}\t{round((t2-t1)//60)}min\n')
+                    f.write(f'{acc}\t{rate}\t{iter}\t{window}win\t{str(stru)}\t{round((t2-t1)//60)}min\n')
                 print(f"mlp ends\n\n\n")
 
 
