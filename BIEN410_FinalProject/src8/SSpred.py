@@ -176,7 +176,7 @@ def main():
 
     stru = [280, 220, 180, 120, 90, 40, 20]
     mlp = MLP(X.shape[1], stru, 1)
-    mlp.load_parameters("parameters.txt")
+    mlp.load_parameters("best_para_2024-11-24_15:12:56.txt")
     predictions = mlp.predict(X)
     out(predictions, data, 'outfile.txt')
     acc = accuracy()
