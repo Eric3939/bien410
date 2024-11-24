@@ -144,15 +144,14 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    window = 17
+    window = 9
     X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
 
     structure = [
-        [170, 85, 51 ,17, 1],
-        [170, 85, 51 ,17, 4, 1],
+        [160, 140, 100, 80, 51, 34, 17, 4, 1]
     ]
 
     rates = [
