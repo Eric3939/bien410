@@ -137,30 +137,39 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    X, y, data = read(inputFile, 12)
+    X, y, data = read(inputFile, 15)
     y = y.reshape((-1, 1))
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
 
     structure = [
-        [90, 45, 20, 10, 1],
-        [60, 120, 100, 50, 1],
-        [128, 64, 32, 16, 8, 1],
-        [30, 90, 120, 90, 30, 1],
-        [240, 180, 90, 40, 20, 1],
-        [300, 180, 90, 30, 1]
+        # [90, 45, 20, 10, 1],
+        # [60, 120, 100, 50, 1],
+        # [128, 64, 32, 16, 8, 1],
+        # [30, 90, 120, 90, 30, 1],
+        # [240, 180, 90, 40, 20, 1],
+        # [300, 180, 90, 30, 1]
+
+        [280, 220, 180, 120, 90, 40, 20, 1],
+        [260, 200, 160, 100, 60, 1],
+        [280, 260, 190, 1],
+        [280, 260, 240, 1],
+        [280, 260, 190, 120, 90, 30, 1],
+        [480, 420, 360, 280, 160, 90, 40, 20, 1],
+        [480, 360, 210, 120, 60, 1]
+    
     ]
 
     rates = [
         0.01, 
-        0.001
+        0.1
     ]
 
     # MLP training
     best_acc = 0
     for stru in structure:
         for rate in rates:
-            for _ in range(1):
+            for _ in range(3):
                 t1 = time()
                 print(f"mlp {stru} {rate} starts")
                 mlp = MLP(X.shape[1], stru)
