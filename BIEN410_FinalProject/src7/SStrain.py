@@ -122,6 +122,7 @@ class MLP(nn.Module):
 
 
     def save_parameters(self, filename):
+        np.set_printoptions(threshold=np.inf, linewidth=np.inf)
         with open(filename, "w") as f:
             for name, param in self.named_parameters():
                 f.write(f"Layer: {name}\n")
