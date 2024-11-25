@@ -9,6 +9,8 @@ import subprocess
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 class Protein:
     def __init__(self, id, seq, win) -> None:
@@ -144,19 +146,20 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    window = 9
+    window = 17
     X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
 
     structure = [
-        [160, 140, 120, 98, 72, 36, 18, 9, 4, 1]
+        [272 ,136, 68, 34, 17, 1],
+        [272 ,136, 68, 34, 17, 4, 1]
     ]
 
     rates = [
-        0.01, 
-        0.005
+        0.01
     ]
 
     # MLP training
@@ -166,19 +169,25 @@ def main():
             for _ in range(3):
                 t1 = time()
                 print(f"mlp {stru} {rate} starts")
-                mlp = MLP(X.shape[1], stru)
-                iter = mlp.fit(X, y, 10000, rate)
-                predictions = mlp.predict(X)
-                out(predictions, data, 'outfile.txt')
-                acc = accuracy()
+                mlp = MLP(X_train.shape[1], stru)
+                iter = mlp.fit(X_train, y_train, 10000, rate)
+
+                # accuracy (test)
+                predictions = mlp.predict(X_test)
+                acc = accuracy_score(y_test, predictions)
                 if acc > best_acc:
                     best_acc = acc
                     mlp.save_parameters(f'best_para_{curr_time}.txt')
-                t2 = time()
 
+                # accuracy (all)
+                predictions = mlp.predict(X)
+                out(predictions, data, 'outfile.txt')
+                acc_all = accuracy()
+
+                t2 = time()
                 # write log
                 with open(f'log_{curr_time}.txt', 'a') as f:
-                    f.write(f'{acc}\t{rate}\t{iter}\t{window}win\t{str(stru)}\t{round((t2-t1)//60)}min\n')
+                    f.write(f'{acc}\t{acc_all}\t{rate}\t{iter}\t{window}win\t{str(stru)}\t{round((t2-t1)//60)}min\n')
                 print(f"mlp ends\n\n\n")
 
 
