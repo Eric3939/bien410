@@ -146,7 +146,7 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    window = 17
+    window = 21
     X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
     t2 = time()
@@ -156,10 +156,10 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     structure = [
-        # [272 ,136, 68, 34, 17, 1],
-        # [270, 130, 70, 50, 34, 17, 1],
-        # [260, 130, 80, 50, 34, 17, 1],
-        [240, 150, 100, 70, 50, 30, 17, 1],
+        [220, 130, 110, 80, 60, 45, 30, 17, 1],
+        [210, 110, 60, 45, 30, 17, 1],
+        [220, 120, 70, 50, 34, 17, 1],
+        [200, 150, 100, 80, 60, 40, 30, 17, 1],
     ]
 
     rates = [
