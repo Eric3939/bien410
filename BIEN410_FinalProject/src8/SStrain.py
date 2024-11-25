@@ -149,9 +149,11 @@ def main():
     window = 17
     X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     t2 = time()
     print(f'read completed. time: {round(t2-t1)}s')
+    
+    # train test split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     structure = [
         [272 ,136, 68, 34, 17, 1],
