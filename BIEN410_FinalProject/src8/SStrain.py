@@ -160,6 +160,7 @@ def main():
         # [210, 110, 60, 45, 30, 17, 1],
         # [220, 120, 70, 50, 34, 17, 1],
         [200, 150, 100, 80, 60, 40, 30, 17, 1],
+        [200, 100, 60, 30, 1]
     ]
 
     rates = [
@@ -170,7 +171,7 @@ def main():
     best_acc = 0
     for stru in structure:
         for rate in rates:
-            for _ in range(180):
+            for _ in range(1):
                 t1 = time()
                 print(f"mlp {stru} {rate} starts")
                 mlp = MLP(X_train.shape[1], stru)
