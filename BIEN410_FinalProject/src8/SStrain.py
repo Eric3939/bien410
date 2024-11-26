@@ -146,7 +146,7 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    window = 21
+    window = 17
     X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
     t2 = time()
