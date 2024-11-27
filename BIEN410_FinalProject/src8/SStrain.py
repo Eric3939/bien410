@@ -167,9 +167,9 @@ def main():
 
     # MLP training
     best_acc = 0
-    for stru in structure:
-        for rate in rates:
-            for _ in range(3):
+    for _ in range(3):
+        for stru in structure:
+            for rate in rates:
                 t1 = time()
                 print(f"mlp {stru} {rate} starts")
                 mlp = MLP(X_train.shape[1], stru)
