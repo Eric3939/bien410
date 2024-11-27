@@ -156,9 +156,7 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     structure = [
-        [170, 80, 1],
-        [170, 100, 30, 17, 1],
-        [260, 200, 140, 100, 60, 34, 17, 1]
+        [170, 85, 51, 17, 1]
     ]
 
     rates = [
@@ -167,7 +165,7 @@ def main():
 
     # MLP training
     best_acc = 0
-    for _ in range(3):
+    for _ in range(10):
         for stru in structure:
             for rate in rates:
                 t1 = time()
