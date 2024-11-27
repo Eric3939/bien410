@@ -146,7 +146,7 @@ def main():
     # read
     t1 = time()
     inputFile = '../training_data/labels.txt'
-    window = 17
+    window = 13
     X, y, data = read(inputFile, window)
     y = y.reshape((-1, 1))
     t2 = time()
@@ -156,7 +156,9 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     structure = [
-        [170, 85, 51, 17, 1]
+        [130, 60, 1],
+        [130, 60, 30, 13, 1],
+        [150, 120, 100, 70, 50, 26, 13, 1]
     ]
 
     rates = [
@@ -165,7 +167,7 @@ def main():
 
     # MLP training
     best_acc = 0
-    for _ in range(10):
+    for _ in range(3):
         for stru in structure:
             for rate in rates:
                 t1 = time()
